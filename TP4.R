@@ -3,6 +3,7 @@ library(sf)
 library(mapsf)
 library(classInt)
 library(leaflet)
+library(openxlsx)
 
 #Exercice1
 #1) Création du jeu de données
@@ -78,5 +79,90 @@ metro_sf %>%
   geom_bar(aes(x=DENSITE_cat))
 
 plot(metro_sf["DENSITE_cat"],border=FALSE)
+
+
+#Exercice2
+Tx_pauvrete <- read.xlsx("Donnees/Taux_pauvrete_2018.xlsx")
+dep_sf<-st_read("Fonds_carte/France_metro/dep_francemetro_2021.shp",options="ENCODING=WINDOWS-1252")
+str(dep_sf)
+
+#1)Jointure
+dep_sf<-dep_sf %>% 
+  left_join(y = Tx_pauvrete %>% select(-Dept),
+            by=c("code"="Code"))
+
+#Méthode Fisher choro:applats de couleur
+mf_map(x=dep_sf,
+      var="Tx_pauvrete",
+      type="choro",
+      nbreaks=4,
+      breaks="fisher")
+
+#Méthode equal
+mf_map(x=dep_sf,
+       var="Tx_pauvrete",
+       type="choro",
+       nbreaks=4,
+       breaks="equal")
+
+#Méthode quantile
+mf_map(x=dep_sf,
+       var="Tx_pauvrete",
+       type="choro",
+       nbreaks=4,
+       breaks="quantile")
+
+#2)Découpage manuel(sans légende)
+mf_map(x=dep_sf,
+       var="Tx_pauvrete",
+       type="choro",
+       breaks=c(0,13,17,25,max(dep_sf$Tx_pauvrete)),
+       leg_pos=NA)
+
+#Encadré
+mf_inset_on(
+  x=dep_sf,
+  pos="topright",
+  cex=.2
+)
+
+#Ile de France
+dep_idf<-dep_sf %>% 
+  filter(code%in%c(75,92,93,94))
+
+#Initialisation de l'encadré
+mf_init(dep_idf)
+#Ile de F
+mf_map(x=dep_idf,
+       var="Tx_pauvrete",
+       type="choro",
+       breaks=c(0,13,17,25,max(dep_sf$Tx_pauvrete)),
+       leg_pos=NA,
+       add=TRUE)
+#Labels
+mf_label(x = dep_idf,
+         var="code",
+         col="black")
+#On sort de l'encadré
+mf_inset_off()
+
+mer<-st_read("Fonds_carte/merf_2021/merf_2021.shp",options="ENCODING=WINDOWS-1252")
+mf_map(mer, col="blue",add=TRUE)
+
+mf_legend(
+  type="choro",
+  title="Taux de pauvreté",
+  val=c("","Moins de 13","De 13 à moins de 17","De 17 à moins de 25","Plus de 25"),
+  pal="Mint",
+  pos="left"
+)
+mf_layout(
+  title="Taux de pauvreté par département en 2018",
+  credits="Source:Insee - @ IGN - Insee - 2021")
+
+dev.off()
+
+pdf(file="macarte.pdf",width=9,height=11)
+
 
 

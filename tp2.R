@@ -64,6 +64,12 @@ depts_bretagne_geo <- com_bret %>%
   summarise(
     geometry = st_union(geometry)
   )
+plot(depts_bretagne_geo)
+
+#14 Centroïdes
+
+
+
   
 
 
