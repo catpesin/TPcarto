@@ -5,6 +5,7 @@
 library(sf)
 library(dplyr)
 #q1
+#Charger le dossier zip avec les 4 fichiers correspondants
 com_frm21=st_read("fonds/commune_francemetro_2021.shp",options = "ENCODING=WINDOWS-1252")
 #q2
 summary(com_frm21)
@@ -38,7 +39,7 @@ str(com_bret)
 # groupby dep
 # summarise
 #st_union
-com_bret = com_bret %>% group_by(dep)
+
 
 #reg76 <- st_union(occ)
 #dep76 <- aggregate(occ[,"POPULATION"], by = list(occ$INSEE_DEP), sum)
@@ -46,6 +47,24 @@ com_bret = com_bret %>% group_by(dep)
 #plot(st_geometry(dep76), col = NA, border = "lightblue2", lwd = 1, add = TRUE)
 #plot(reg76, col = NA, border = "lightblue3", lwd = 2, add = TRUE)
 
+depts_bretagne<- com_bret %>%
+  group_by(dep) %>%
+  summarise(
+    surf = sum(surf)
+    )
+str(depts_bretagne)
+plot(depts_bretagne) %>% st_geometry()
+
+#13 par union des géométries
+
+com_bret %>% st_union() %>% st_geometry() %>% plot()
+
+depts_bretagne_geo <- com_bret %>% 
+  group_by(dep) %>% 
+  summarise(
+    geometry = st_union(geometry)
+  )
+  
 
 
 
