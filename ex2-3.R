@@ -52,3 +52,34 @@ pbe_pop_bruz<-tbl(conn,"popnaiss_com") %>%
   collect()
 pbe_pop_bruz %>% str()
 
+
+#Exercice 3
+
+library(sf)
+library(dplyr)
+
+"1)"
+bpe_dep50<-tbl(conn,"bpe21_metro") %>% 
+  filter(dep=="50") %>% 
+  select( "id", "depcom","dom", "sdom", "typequ", "geometry") %>% 
+  collect()
+str(bpe_dep50)
+#On obtient un dataframe
+
+#2)
+bpe_dep50_bis<-st_read(conn,query="SELECT ID,DEPCOM,DOM, SDOM, TYPEQU, GEOMETRY
+                   FROM bpe21_metro WHERE DEP='50';")
+str(bpe_dep50_bis) 
+#On obtient un sf dataframe
+
+#3)Système de projection associé
+dbGetQuery(conn, "SELECT DISTINCT(ST_SRID(geometry)) FROM bpe21_04;")
+st_crs(bpe_dep50_bis)
+
+#4)Nombre de maternités par région
+maternites<-dbGetQuery(conn, statement= "SELECT REG, COUNT(id) FROM bpe21_metro
+                       WHERE TYPEQU='D107'GROUP BY REG ORDER BY COUNT(id);")
+
+#5)Cinémas
+#cinemas_bpe<-st_read(conn,query='SELECT * FROM bpe21_metro WHERE TYPEQU='F303';")
+
