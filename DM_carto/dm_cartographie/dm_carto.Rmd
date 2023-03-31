@@ -1,0 +1,44 @@
+---
+title: "Cartographie"
+author: "Catherine Pesin"
+date: "31/03/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, results='hide',error=TRUE,eval = FALSE)
+```
+
+
+## Exercice 2
+
+```{r }
+# Chargement des packages
+
+library(sf)
+library(spdep)
+library(leaflet)
+library(RColorBrewer)
+
+```
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+
+
