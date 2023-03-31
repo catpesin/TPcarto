@@ -18,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, results='hi
 ```{r }
 # Chargement des packages
 
+library(dplyr)
 library(sf)
 library(spdep)
 library(leaflet)
@@ -25,8 +26,7 @@ library(RColorBrewer)
 
 ```
 ```{r}
-library(tidyverse)
-library(dplyr)
+
 ```
 
 
